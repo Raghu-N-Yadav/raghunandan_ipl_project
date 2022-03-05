@@ -1,0 +1,51 @@
+h1 {
+    color:brown;
+    width: auto;
+    text-align: center;
+    background-color: dodgerblue;
+    border-radius: 16px;
+}
+h2 {
+    color: yellowgreen;
+    margin-left: 5em;
+}
+
+table {
+    background-color: whitesmoke;
+    border: 1px solid blue;
+    margin-top: 2em;
+}
+th {
+    color: violet;
+    border: 1px solid burlywood;
+    padding: 10px;
+    height: 30px;
+    cursor: pointer;
+}
+tr {
+    text-align: center;
+    color: saddlebrown;
+    height: 30px;
+}
+tr:hover {
+    background-color:salmon;
+}
+
+button {
+    margin-top: 2em;
+    border-color: green;
+    font-size: 16px;
+    padding: 14px 40px;
+    border-radius: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+button:hover{
+    background-color:gold;
+}
+
+#extra {
+    margin-top: 3em;
+    background-color:slategray;
+    color: snow;
+}

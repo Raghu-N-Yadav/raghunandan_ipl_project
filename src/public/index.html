@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>IPL_Project</title>
+
+        <link rel="stylesheet" href="./style.css">
+    </head>
+<body>
+
+    <h1>Output of Different functions</h1>
+
+    <!-- different button for different outputs -->
+    <button id='Mpy'>Matches Per Year</button>
+    <button id='matchesWon'>Team Winning Count</button>
+    <button id='extraRuns'>Extra Runs conceded</button>
+    <button id='topTen'>Top Ten Economical Bowlers</button>
+
+    <div>
+        <h1 id='extra'>Extra Question</h1>
+         <!-- Button for extra questions -->
+        <button id='tossMatch'>Toss and Match Winner</button>
+        <button id='plOfMa'>Player of Match</button>
+        <button id='strike'>Strike Rate</button>
+        <button id='ecoInSup'>Super Over Economy</button>
+        <button id='dissMiss'>Player DissMiss</button>
+    </div>
+
+   
+
+    <table id="tab" border =1></table>
+
+        <script>
+            document.getElementById('tossMatch').addEventListener('click', tossAndMatch);
+            document.getElementById('plOfMa').addEventListener('click',playerOfMatch);
+            document.getElementById('strike').addEventListener('click',batsmanStrikeRate);
+            document.getElementById('ecoInSup').addEventListener('click',superOverEco);
+            document.getElementById('dissMiss').addEventListener('click', playerDismissed);
+
+            //dismissed palyer function
+            function playerDismissed(){
+                fetch('output/playerDismissedCount.json')
+                .then(res => res.json())
+                .then(data => {
+                    let dismiss = '<h2>Highest number of Times Player Dismissed By</h2>';
+                    dismiss += `
+                        <tr>
+                            <th>Player</th>
+                            <th>Dismissed By</th>    
+                        </tr>
+                    `;
+                    Object.keys(data).map(player => {
+                        dismiss += `
+                            <tr>
+                                <td>${player}</td>
+                                <td>${data[player]}</td>
+                            </tr>
+                        `;
+                    })
+                    document.getElementById('tab').innerHTML = dismiss;
+                }).catch(err => console.log(err));
+            }
+
+            //economy in super over
+            function superOverEco(){
+                fetch('output/superOverEconomyCount.json')
+                .then(res => res.json())
+                .then(data => {
+                    let economyCount = '<h2>Player with best Economy In Super Over</h2>';
+                    economyCount += `
+                        <ul>
+                            <li>${data[0]}</li>
+                        <ul>
+                    `;
+                    document.getElementById('tab').innerHTML = economyCount;
+                }).catch(err => console.log(err))
+            }
+
+            //strike rate function
+            function batsmanStrikeRate(){
+                fetch('output/strikeRateCount.json')
+                .then(res => res.json())
+                .then(data => {
+                    let strikeRateCount = '<h2>Strike Rate Of batsman in each Season</h2>';
+                    strikeRateCount += `
+                        <tr>
+                            <th>Season</th>
+                            <th>Player</th>
+                            <th>Balls Played</th>
+                            <th>Runs Scored</th>
+                            <th>Strike Rate</th>
+                        </tr>
+                    `;
+                    Object.keys(data).map(season => {
+                        let val = Object.keys(data[season]).length+1;
+                        strikeRateCount += `
+                            <tr>
+                                <td rowspan=${val}>${season}</td>
+                            </tr>
+                        `;
+                        Object.keys(data[season]).map(player => {
+                        strikeRateCount += `
+                            <tr>
+                                <td>${player}</td>
+                                <td>${data[season][player]['ball']}</td>
+                                <td>${data[season][player]['runs']}</td>
+                                <td>${data[season][player]['strike_rate']}</td>
+                            </tr>
+                        `;
+                        })
+                    })
+                    document.getElementById('tab').innerHTML = strikeRateCount;
+                }).catch(err => console.log(err))
+            }
+            
+            
+            //function for highest number of player of match
+            function playerOfMatch(){
+                fetch('output/playerOfMatchCount.json')
+                .then(res => res.json())
+                .then(data => {
+                    let plyerOfMatchCount = '<h2>Player with Highest Player Of Match</h2>';
+                    plyerOfMatchCount += `
+                        <tr>
+                            <th>Season</th>
+                            <th>Player</th>
+                        </tr>
+                    `;
+                    Object.keys(data).map(season => {
+                        plyerOfMatchCount += `
+                            <tr>
+                                <td>${season}</td>
+                                <td>${data[season][0]}</td>
+                            </tr>
+                        `;
+                    })
+                    document.getElementById('tab').innerHTML = plyerOfMatchCount;
+                }).catch(err => console.log(err))
+            }
+
+            //function to get output on browser for toss and match winner
+            function tossAndMatch(){
+                fetch('output/matchAndTossWinCount.json')
+                .then(res => res.json())
+                .then(data => {
+                    let tossMatchCount = '<h2>Teams Won Toss and Match</h2>';
+                    tossMatchCount += `
+                        <tr>
+                            <th>Team</th>
+                            <th>Win Count</th>
+                        </tr>
+                    `;
+                    Object.keys(data).map(team => {
+                        tossMatchCount += `
+                            <tr>
+                                <td>${team}</td>
+                                <td>${data[team]}</td>
+                            </tr>
+                        `;
+                    })
+                    document.getElementById('tab').innerHTML = tossMatchCount;
+                }).catch(err => console.log(err))
+            }
+        
+        </script>
+
+        <script>
+            //accessing button by it's id and calling function on click
+            document.getElementById('Mpy').addEventListener('click', matchesPerYearData);
+            document.getElementById('matchesWon').addEventListener('click', matchesWonByTeam);
+            document.getElementById('extraRuns').addEventListener('click', extraRunsConceded);
+            document.getElementById('topTen').addEventListener('click', topTenBowlers);
+
+            //function to show top ten economical bowlers
+            function topTenBowlers(){
+                //fetching json file
+                fetch('output/toptenEconomicalBowlers.json')
+                //converting data in json format
+                .then(res => res.json())
+                //accessing json data
+                .then(data => {
+                    let economy = '<h2>Top Ten Economical Bowlers in 2015</h2>';
+                    
+                    //table heading
+                    economy += `
+                        <tr>
+                            <th>Bowler</th>
+                            <th>Economy in 2015</th>
+                        </tr>
+                    `;
+                    //pushing table data
+                    Object.keys(data).map(bowler => {
+                        economy += `
+                            <tr>
+                                <td>${bowler}</td>
+                                <td>${data[bowler]}</td>
+                            </tr>
+                        `;
+                    })
+                    //accessing table by id and pusing all data in table
+                    document.getElementById('tab').innerHTML = economy;
+                }).catch(err => console.log(err))
+            }
+
+            function extraRunsConceded(){
+                fetch('../output/extraRunsPerTeam.json')
+                .then(res => res.json())
+                .then(data => {
+                    let extraRun = '<h2>Runs conceded by per team in 2016</h2>';
+                    let val = Object.keys(data['2016']).length +1;
+                    extraRun += `
+                        <tr>
+                            <th>Season</th>
+                            <th>Team</th>
+                            <th>Extra runs Conceded</th>
+                        </tr>
+                        <tr>
+                            <td rowspan=${val}>2016</td>
+                        </tr>
+                    `;
+
+                    Object.keys(data['2016']).map(team => {
+                        extraRun += `
+                            <tr>
+                                <td>${team}</td>
+                                <td>${data['2016'][team]}</td>
+                            </tr>
+                        `;
+                    })
+
+                    document.getElementById('tab').innerHTML = extraRun;
+                }).catch(err => console.log(err))
+            }
+
+            function matchesWonByTeam(){
+                fetch('../output/matchesPerYearPerTeam.json')
+                .then(res => res.json())
+                .then(data => {
+                    let matchWin = '<h2>Matches won by per team in each season</h2>';
+                    matchWin += `
+                        <tr>
+                            <th>Season</th>
+                            <th>Team</th>
+                            <th>Matches Won</th>
+                        </tr>
+                    `;
+                    Object.keys(data).map(season => {
+                        let val = Object.keys(data[season]).length;
+                        matchWin += `
+                            <tr>
+                                <td rowspan=${val+1}>${season}</td>
+                            </tr>
+                        `;
+                        Object.keys(data[season]).map(team => {
+                            matchWin += `
+                                <tr>
+                                    
+                                    <td>${team}</td>
+                                    <td>${data[season][team]}</td>
+                                </tr>
+                            `;
+                        })
+                    })
+                    document.getElementById('tab').innerHTML = matchWin;
+                }).catch(err => console.log(err))
+            }
+
+            function matchesPerYearData(){
+                //console.log('its working');
+                fetch('../output/matchesPerYear.json')
+                .then(response => response.json())
+                .then(data => {
+                    //let years = '<h2>Matches Per Year</h2>';
+                    let table = '<h2>Matches Per Year</h2>';
+                    table += `
+                        <tr>
+                            <th>Season</th>
+                            <th>Matches Played</th>
+                        </tr>
+                    `;
+                    Object.keys(data).map(key => {
+                        table += `
+                        <tr>
+                            <td>${key}</td>
+                            <td>${data[key]}</td>
+                        </tr>
+                        `;
+
+                    })
+                    document.getElementById('tab').innerHTML = table;
+                    
+                    //let useit = ('<table border =1>' + table + '</table>')
+                    // Object.keys(data).map(key => {
+
+                    //     years += `
+                    //         <ul>
+                    //             <li> Year : ${key}</li>
+                    //             <li> Matches : ${data[key]} </li>
+                    //         </ul>
+                    //     `;
+                    // })
+                    // console.log(data);
+                    //document.getElementById('Mpy').innerHTML = useit;
+                    //document.getElementById('Mpy').innerHTML = years;
+                }).catch(err => console.log(err))
+            }
+            
+        </script>
+
+</body>
+</html>
